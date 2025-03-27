@@ -321,7 +321,7 @@ const bookAppointment = async (req, res) => {
 const cancelAppointment = async (req, res) => {
     try {
 
-        const { userId, appointmentId } = req.body
+        const { userId, appointmentId, cancellationReason } = req.body
         const appointmentData = await appointmentModel.findById(appointmentId)
 
         // verify appointment user 
@@ -329,7 +329,11 @@ const cancelAppointment = async (req, res) => {
             return res.json({ success: false, message: 'Unauthorized action' })
         }
 
-        await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true })
+        await appointmentModel.findByIdAndUpdate(appointmentId, { 
+            cancelled: true,
+            cancellationReason: cancellationReason || 'Cancelled by patient',
+            cancelledBy: 'user'
+        })
 
         // releasing doctor slot 
         const { docId, slotDate, slotTime } = appointmentData

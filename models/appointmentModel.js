@@ -10,6 +10,8 @@ const appointmentSchema = new mongoose.Schema({
     amount: { type: Number, required: true },
     date: { type: Number, required: true },
     cancelled: { type: Boolean, default: false },
+    cancellationReason: { type: String, default: '' },
+    cancelledBy: { type: String, default: '' }, // 'admin', 'doctor', or 'user'
     payment: { type: Boolean, default: false },
     isCompleted: { type: Boolean, default: false },
     isRead: { type: Boolean, default: false }

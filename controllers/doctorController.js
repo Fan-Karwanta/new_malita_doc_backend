@@ -53,11 +53,15 @@ const appointmentsDoctor = async (req, res) => {
 const appointmentCancel = async (req, res) => {
     try {
 
-        const { docId, appointmentId } = req.body
+        const { docId, appointmentId, cancellationReason } = req.body
 
         const appointmentData = await appointmentModel.findById(appointmentId)
         if (appointmentData && appointmentData.docId === docId) {
-            await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true })
+            await appointmentModel.findByIdAndUpdate(appointmentId, { 
+                cancelled: true,
+                cancellationReason: cancellationReason || 'Cancelled by doctor',
+                cancelledBy: 'doctor'
+            })
             
             // Get patient email from userId
             const patient = await userModel.findById(appointmentData.userId);

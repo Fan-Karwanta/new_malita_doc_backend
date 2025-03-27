@@ -48,14 +48,19 @@ const appointmentsAdmin = async (req, res) => {
 const appointmentCancel = async (req, res) => {
     try {
         const { appointmentId } = req.params;  // Get appointmentId from URL params
+        const { cancellationReason } = req.body; // Get cancellation reason from request body
         
         const appointmentData = await appointmentModel.findById(appointmentId);
         if (!appointmentData) {
             return res.json({ success: false, message: 'Appointment not found' });
         }
 
-        // Update appointment status to cancelled
-        await appointmentModel.findByIdAndUpdate(appointmentId, { cancelled: true });
+        // Update appointment status to cancelled with reason
+        await appointmentModel.findByIdAndUpdate(appointmentId, { 
+            cancelled: true,
+            cancellationReason: cancellationReason || 'Cancelled by admin',
+            cancelledBy: 'admin'
+        });
 
         // Release the doctor's slot
         const { docId, slotDate, slotTime } = appointmentData;
